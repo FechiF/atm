@@ -112,23 +112,22 @@ const checkCredentials = () => {
 
 const transferMoney = () => {
   // deduct from current
-  const transferTo = accounts.find(
-    acc => acc.userName === inputTransferTo.value
-  );
+  const transferTo = accounts.find(acc => acc.owner === inputTransferTo.value);
   const amt = Number(inputTransferAmount.value);
+
   if (
     transferTo &&
     transferTo !== currentAccount &&
     amt > 0 &&
     calcDisplayBalance() - amt >= 0
   ) {
-    const transactionDate = new Date().toISOString();
+    const transactionDate = new Date();
 
     transferTo.movements.push(amt);
-    transferTo.movementsDates.push(transactionDate);
+    transferTo.movementsDates.push(transactionDate.toISOString());
 
     currentAccount.movements.push(amt * -1);
-    currentAccount.movementsDates.push(transactionDate);
+    currentAccount.movementsDates.push(transactionDate.toISOString());
     updateUIDate(transactionDate);
     updateUI();
   }
@@ -139,12 +138,12 @@ const transferMoney = () => {
 const requestLoan = () => {
   //any deposit >10% of request?
   const request = Number(inputLoanAmount.value);
-  console.log(3000 > request * 0.1);
 
   if (currentAccount.movements.some(mov => mov > request * 0.1)) {
-    const transactionDate = new Date().toISOString;
+    const transactionDate = new Date();
+
     currentAccount.movements.push(request * -1);
-    currentAccount.movementsDates.push(transactionDate);
+    currentAccount.movementsDates.push(transactionDate.toISOString());
     updateUIDate(transactionDate);
     updateUI();
   }
@@ -159,7 +158,6 @@ const closeAccount = () => {
 
   if (index > -1) {
     accounts.splice(index, 1);
-    console.log(accounts);
 
     logout();
   }
@@ -343,18 +341,9 @@ btnClose.addEventListener('click', function (e) {
 currentAccount = account1;
 login();
 
-console.log(navigator.language);
 const num = 3884764.23;
 const options = {
   style: 'unit', //unit percent or currency
   unit: 'mile-per-hour', //celsius etc only for style unit,
   currency: 'EUR', // cannot be gleaned from locale only for style currency
 };
-
-console.log('US:      ', new Intl.NumberFormat('en-US', options).format(num));
-console.log('Germany: ', new Intl.NumberFormat('de-DE', options).format(num));
-console.log('Syria:   ', new Intl.NumberFormat('ar-SY', options).format(num));
-console.log(
-  navigator.language,
-  new Intl.NumberFormat(navigator.language, options).format(num)
-);
